@@ -14,6 +14,6 @@ class Tg:
             paginator = client.get_paginator('describe_target_groups')
             page_iterator = paginator.paginate()
             for page in page_iterator:
-                self.identifiers.extend([item['TargetGroupName'] for item in page['TargetGroups']])
+                self.identifiers.extend([item['TargetGroupArn'].split(':')[-1] for item in page['TargetGroups']])
         except Exception: 
             pass
