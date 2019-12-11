@@ -33,7 +33,7 @@ except:
     config = {}
 
 # Get list of all regions from EC2 API
-regions = [region['RegionName'] for region in boto3.client('ec2').describe_regions()['Regions']]
+regions = [region['RegionName'] for region in boto3.client('ec2', 'ap-southeast-2').describe_regions()['Regions']]
 
 # Set default and supported output formats
 supported_formats = ['audit','json','yaml','cfn-monitor']
