@@ -10,7 +10,7 @@ class Output:
     def audit(self):
         output = ''
         for region, regional_resources in self.resources.identifiers.items():
-            alarm_resources = [alarm['dimension_value'] for alarm in self.alarms.dimensions[region]]
+            alarm_resources = [dimension['Value'] for alarm in self.alarms.dimensions[region] for dimension in alarm['dimensions']]
             for resource, identifiers in regional_resources.items():
                 for identifier in identifiers:
                     if identifier in alarm_resources:

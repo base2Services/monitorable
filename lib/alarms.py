@@ -17,8 +17,7 @@ class Alarms:
                     self.dimensions[region].append(
                         {
                             'alarm_name': alarm['AlarmName'],
-                            'dimension_name': alarm['Dimensions'][0]['Name'],
-                            'dimension_value': alarm['Dimensions'][0]['Value']
+                            'dimensions': alarm['Dimensions']
                         }
                     )
         except Exception: 
