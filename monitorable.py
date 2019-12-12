@@ -5,6 +5,8 @@ import sys
 import yaml
 import boto3
 import argparse
+import asyncio
+import concurrent.futures
 
 from lib.resources import Resources
 from lib.output import Output
@@ -83,26 +85,48 @@ alarms = Alarms()
 rows, columns = os.popen('stty size', 'r').read().split()
 print('=' * int(columns))
 
-# Loop over regions to scan resouces and alarms
-for region in regions:
-    if output_format == 'audit':
-        alarms.get(region)
-    resources.add(Apigateway(region))
-    resources.add(Asg(region))
-    resources.add(Aurora(region))
-    resources.add(Cloudfront(region))
-    resources.add(Dynamodb(region))
-    resources.add(Ec2(region))
-    resources.add(Ecs(region))
-    resources.add(Efs(region))
-    resources.add(Elasticache(region))
-    resources.add(Elb(region))
-    resources.add(Lambda(region))
-    resources.add(Mq(region))
-    resources.add(Rds(region))
-    resources.add(Redshift(region))
-    resources.add(Tg(region))
-    resources.add(Sqs(region))
+# Async function to get resources
+async def get_resources(executor,regions):
+    loop = asyncio.get_event_loop()
+    blocking_tasks = []
+    for region in regions:
+        blocking_tasks.append(loop.run_in_executor(executor, Apigateway, region))
+        blocking_tasks.append(loop.run_in_executor(executor, Asg, region))
+        blocking_tasks.append(loop.run_in_executor(executor, Aurora, region))
+        blocking_tasks.append(loop.run_in_executor(executor, Cloudfront, region))
+        blocking_tasks.append(loop.run_in_executor(executor, Dynamodb, region))
+        blocking_tasks.append(loop.run_in_executor(executor, Ec2, region))
+        blocking_tasks.append(loop.run_in_executor(executor, Ecs, region))
+        blocking_tasks.append(loop.run_in_executor(executor, Efs, region))
+        blocking_tasks.append(loop.run_in_executor(executor, Elasticache, region))
+        blocking_tasks.append(loop.run_in_executor(executor, Elb, region))
+        blocking_tasks.append(loop.run_in_executor(executor, Lambda, region))
+        blocking_tasks.append(loop.run_in_executor(executor, Mq, region))
+        blocking_tasks.append(loop.run_in_executor(executor, Rds, region))
+        blocking_tasks.append(loop.run_in_executor(executor, Redshift, region))
+        blocking_tasks.append(loop.run_in_executor(executor, Tg, region))
+        blocking_tasks.append(loop.run_in_executor(executor, Sqs, region))
+    for completed in asyncio.as_completed(blocking_tasks):
+        resources.add(await completed)
+
+# Async function to get alarms
+async def get_alarms(executor,regions):
+    loop = asyncio.get_event_loop()
+    blocking_tasks = []
+    for region in regions:
+        blocking_tasks.append(loop.run_in_executor(executor, alarms.get, region))
+    await asyncio.wait(blocking_tasks)
+
+# Create thread pool for concurrent tasks
+executor = concurrent.futures.ThreadPoolExecutor(max_workers=100)
+event_loop = asyncio.get_event_loop()
+
+# Loop over regions to scan resouces
+event_loop.run_until_complete(get_resources(executor,regions))
+
+# Loop over regions to scan alarms
+if output_format == 'audit':
+    event_loop.run_until_complete(get_alarms(executor,regions))
 
 print('=' * int(columns))
 
