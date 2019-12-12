@@ -1,5 +1,4 @@
-import json
-import yaml
+import os
 
 class Resources:
 
@@ -13,7 +12,9 @@ class Resources:
         self.progress(resource)
 
     def progress(self,resource):
+        _, columns = os.popen('stty size', 'r').read().split()
+        max_bar_width = int(columns) - 45
         if len(resource.identifiers) > 0:
-            print('\033[92m✓\033[0m      ' + resource.region.ljust(16) + resource.name.ljust(16) + str(len(resource.identifiers)).rjust(4) + '  ' + '|' * len(resource.identifiers))
+            print('\033[92m✓\033[0m      ' + resource.region.ljust(16) + resource.name.ljust(16) + str(len(resource.identifiers)).rjust(4) + '  ' + '|' * min(len(resource.identifiers),max_bar_width))
         else:
-            print('\033[91mx\033[0m      ' + resource.region.ljust(16) + resource.name.ljust(16) + str(len(resource.identifiers)).rjust(4) + '  ' + '|' * len(resource.identifiers))
+            print('\033[91mx\033[0m      ' + resource.region.ljust(16) + resource.name.ljust(16) + str(len(resource.identifiers)).rjust(4) + '  ' + '|' * min(len(resource.identifiers),max_bar_width))
