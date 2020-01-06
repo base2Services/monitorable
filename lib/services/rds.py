@@ -14,6 +14,6 @@ class Rds:
             paginator = client.get_paginator('describe_db_instances')
             page_iterator = paginator.paginate()
             for page in page_iterator:
-                self.identifiers.extend([item['DBInstanceIdentifier'] for item in page['DBInstances']])
+                self.identifiers.extend([item['DBInstanceIdentifier'] for item in page['DBInstances'] if "DBClusterIdentifier" not in item])
         except Exception: 
             pass

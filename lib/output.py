@@ -26,7 +26,7 @@ class Output:
         return yaml.dump(self.resources.identifiers, default_flow_style=False)
 
     def cfn_monitor(self):
-        output = '\n### cfn-moitor config ###\n\n'
+        output = '\n### cfn-monitor config ###\n\n'
         templates = {
             'lambda': 'LambdaMetrics',
             'apigateway': 'ApiGateway',
@@ -34,7 +34,7 @@ class Output:
             'sqs': 'SQSQueue',
             'dynamodb': 'DynamoDBTable',
             'rds': 'RDSInstance',
-            'aurora': 'DBCluster',
+            'aurora': 'AuroraInstance',
             'tg': 'ApplicationELBTargetGroup',
             'efs': 'ElasticFileSystem',
             'cloudfront': 'CloudFrontDistribution',

@@ -11,9 +11,9 @@ class Aurora:
     def get_resources(self):
         try:
             client = boto3.client('rds', region_name=self.region)
-            paginator = client.get_paginator('describe_db_clusters')
+            paginator = client.get_paginator('describe_db_instances')
             page_iterator = paginator.paginate()
             for page in page_iterator:
-                self.identifiers.extend([item['DBClusterIdentifier'] for item in page['DBClusters']])
+                self.identifiers.extend([item['DBInstanceIdentifier'] for item in page['DBInstances'] if "DBClusterIdentifier" in item])
         except Exception: 
             pass
