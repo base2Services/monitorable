@@ -11,7 +11,9 @@ class Ecs:
     def get_resources(self):
         try:
             client = boto3.client('ecs', region_name=self.region)
-            page = client.describe_clusters()
-            self.identifiers.extend([item['clusterName'] for item in page['clusters']])
+            paginator = client.get_paginator('list_clusters')
+            page_iterator = paginator.paginate()
+            for page in page_iterator:
+                self.identifiers.extend([item.split('/')[-1] for item in page['clusterArns']])
         except Exception: 
             pass
