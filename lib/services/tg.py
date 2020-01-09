@@ -17,14 +17,15 @@ class Tg:
             for page in page_iterator:
                 target_group_arns.extend([item['TargetGroupArn'] for item in page['TargetGroups']])
             if target_group_arns:
-                tags = client.describe_tags(ResourceArns=target_group_arns)
-                self.identifiers.extend([{
-                    'id': item['ResourceArn'].split(':')[-1],
-                    'tags': [{
-                        'key': t['Key'],
-                        'value': t['Value']
-                    } for t in item['Tags']]
-                } for item in tags['TagDescriptions']])
+                for i in range(0, len(target_group_arns), 20):
+                    tags = client.describe_tags(ResourceArns=target_group_arns[i:i + 20])
+                    self.identifiers.extend([{
+                        'id': item['ResourceArn'].split(':')[-1],
+                        'tags': [{
+                            'key': t['Key'],
+                            'value': t['Value']
+                        } for t in item['Tags']]
+                    } for item in tags['TagDescriptions']])
         except Exception as e:
             print('ERROR'.ljust(7) + self.region.ljust(16) + self.name.ljust(19) + str(e), flush=True) 
             pass
