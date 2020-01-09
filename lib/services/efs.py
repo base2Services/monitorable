@@ -21,5 +21,6 @@ class Efs:
                         'value': t['Value']
                     } for t in item.get('Tags', [])]
                 } for item in page['FileSystems']])
-        except Exception: 
+        except Exception as e:
+            print('ERROR'.ljust(7) + self.region.ljust(16) + self.name.ljust(19) + str(e), flush=True) 
             pass

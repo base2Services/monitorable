@@ -16,13 +16,15 @@ class Elb:
             load_balancers = []
             for page in page_iterator:
                 load_balancers.extend([item['LoadBalancerName'] for item in page['LoadBalancerDescriptions']])
-            tags = client.describe_tags(LoadBalancerNames=load_balancers)
-            self.identifiers.extend([{
-                'id': item['LoadBalancerName'],
-                'tags': [{
-                    'key': t['Key'],
-                    'value': t['Value']
-                } for t in item['Tags']]
-            } for item in tags['TagDescriptions']])
-        except Exception: 
+            if load_balancers:
+                tags = client.describe_tags(LoadBalancerNames=load_balancers)
+                self.identifiers.extend([{
+                    'id': item['LoadBalancerName'],
+                    'tags': [{
+                        'key': t['Key'],
+                        'value': t['Value']
+                    } for t in item['Tags']]
+                } for item in tags['TagDescriptions']])
+        except Exception as e:
+            print('ERROR'.ljust(7) + self.region.ljust(16) + self.name.ljust(19) + str(e), flush=True) 
             pass

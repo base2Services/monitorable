@@ -15,15 +15,16 @@ class Tg:
             page_iterator = paginator.paginate()
             target_group_arns = []
             for page in page_iterator:
-                # self.identifiers.extend([item['TargetGroupArn'].split(':')[-1] for item in page['TargetGroups']])
                 target_group_arns.extend([item['TargetGroupArn'] for item in page['TargetGroups']])
-            tags = client.describe_tags(ResourceArns=target_group_arns)
-            self.identifiers.extend([{
-                'id': item['ResourceArn'].split(':')[-1],
-                'tags': [{
-                    'key': t['Key'],
-                    'value': t['Value']
-                } for t in item['Tags']]
-            } for item in tags['TagDescriptions']])
-        except Exception: 
+            if target_group_arns:
+                tags = client.describe_tags(ResourceArns=target_group_arns)
+                self.identifiers.extend([{
+                    'id': item['ResourceArn'].split(':')[-1],
+                    'tags': [{
+                        'key': t['Key'],
+                        'value': t['Value']
+                    } for t in item['Tags']]
+                } for item in tags['TagDescriptions']])
+        except Exception as e:
+            print('ERROR'.ljust(7) + self.region.ljust(16) + self.name.ljust(19) + str(e), flush=True) 
             pass

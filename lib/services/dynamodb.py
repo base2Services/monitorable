@@ -26,5 +26,6 @@ class Dynamodb:
                         'value': t['Value']
                     } for t in tags]
                 }])
-        except Exception: 
+        except Exception as e:
+            print('ERROR'.ljust(7) + self.region.ljust(16) + self.name.ljust(19) + str(e), flush=True) 
             pass

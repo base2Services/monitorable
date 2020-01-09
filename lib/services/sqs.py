@@ -12,6 +12,7 @@ class Sqs:
         try:
             client = boto3.client('sqs', region_name=self.region)
             page = client.list_queues()
+            queues = []
             if 'QueueUrls' in page:
                 queues = [item for item in page['QueueUrls']]
             for queue in queues:
@@ -24,5 +25,5 @@ class Sqs:
                     } for t in tags.get('Tags', {}).items()]
                 }])
         except Exception as e:
-            print(e) 
+            print('ERROR'.ljust(7) + self.region.ljust(16) + self.name.ljust(19) + str(e), flush=True) 
             pass

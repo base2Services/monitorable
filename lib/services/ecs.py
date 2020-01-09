@@ -16,10 +16,12 @@ class Ecs:
             clusterArns = []
             for page in page_iterator:
                 clusterArns.extend([item for item in page['clusterArns']])
-            clusters = client.describe_clusters(clusters=clusterArns, include=['TAGS'])
-            self.identifiers.extend([{
-                'id': item['clusterName'],
-                'tags': item['tags']
-            } for item in clusters['clusters']])
-        except Exception: 
+            if clusterArns:
+                clusters = client.describe_clusters(clusters=clusterArns, include=['TAGS'])
+                self.identifiers.extend([{
+                    'id': item['clusterName'],
+                    'tags': item['tags']
+                } for item in clusters['clusters']])
+        except Exception as e:
+            print('ERROR'.ljust(7) + self.region.ljust(16) + self.name.ljust(19) + str(e), flush=True) 
             pass

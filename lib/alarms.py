@@ -4,6 +4,7 @@ import boto3
 class Alarms:
 
     def __init__(self):
+        self.name = 'alarms'
         self.dimensions = {}
         self.dimensions.setdefault('us-east-1',[])
 
@@ -21,7 +22,8 @@ class Alarms:
                             'dimensions': alarm['Dimensions']
                         }
                     )
-        except Exception: 
+        except Exception as e:
+            print('ERROR'.ljust(7) + region.ljust(16) + self.name.ljust(19) + str(e)) 
             pass
         self.progress(region)
 

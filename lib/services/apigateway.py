@@ -21,9 +21,9 @@ class Apigateway:
                         'value':t[1]
                     } for t in item.get('tags', {}).items()]
                 } for item in page['items']])
-        except Exception:
+        except Exception as e:
+            print('ERROR'.ljust(7) + self.region.ljust(16) + self.name.ljust(19) + str(e), flush=True) 
             pass
-
         try:
             client = boto3.client('apigatewayv2', region_name=self.region)
             paginator = client.get_paginator('get_apis')
@@ -36,5 +36,6 @@ class Apigateway:
                         'value':t[1]
                     } for t in item.get('Tags', {}).items()]
                 } for item in page['Items']])
-        except Exception: 
+        except Exception as e:
+            print('ERROR'.ljust(7) + self.region.ljust(16) + self.name.ljust(19) + str(e), flush=True) 
             pass
