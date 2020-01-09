@@ -28,7 +28,7 @@ class Output:
     def cfn_monitor(self):
         output = '\n### cfn-monitor config ###\n\n'
         templates = {
-            'lambda': 'LambdaMetrics',
+            'lambdafunctions': 'LambdaMetrics',
             'apigateway': 'ApiGateway',
             'ecs': 'ECSCluster',
             'sqs': 'SQSQueue',
@@ -49,7 +49,7 @@ class Output:
             region_output = {}
             for resource, identifiers in regional_resources.items():
                 for identifier in identifiers:
-                    region_output[identifier] = templates[resource]
+                    region_output[identifier['id']] = templates[resource]
             if region_output:
                 output += '# ' + region + '\n\n'
                 output += yaml.dump(region_output, default_flow_style=False)
