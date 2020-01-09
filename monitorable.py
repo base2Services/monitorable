@@ -4,29 +4,14 @@ import os
 import sys
 import yaml
 import boto3
-import argparse
 import asyncio
+import argparse
+import importlib
 import concurrent.futures
 
 from lib.resources import Resources
 from lib.output import Output
 from lib.alarms import Alarms
-from lib.services.rds import Rds
-from lib.services.aurora import Aurora
-from lib.services.ec2 import Ec2
-from lib.services.asg import Asg
-from lib.services.elb import Elb
-from lib.services.tg import Tg
-from lib.services.ecs import Ecs
-from lib.services.elasticache import Elasticache
-from lib.services.efs import Efs
-from lib.services.redshift import Redshift
-from lib.services.dynamodb import Dynamodb
-from lib.services.apigateway import Apigateway
-from lib.services.mq import Mq
-from lib.services.lambdafunctions import Lambda
-from lib.services.sqs import Sqs
-from lib.services.cloudfront import Cloudfront
 
 # Get config from config file if it exists
 try:
@@ -41,10 +26,22 @@ regions = [region['RegionName'] for region in boto3.client('ec2', 'ap-southeast-
 supported_formats = ['audit','json','yaml','cfn-monitor']
 output_format = 'audit'
 
+# Set default skipped services
+skip = []
+
+# Import services
+services_dir = os.listdir('lib/services')
+supported_services = [x.split('.py')[0] for x in services_dir if x not in ['__init__.py','__pycache__']]
+service_classes = {}
+for service in supported_services:
+    service_module = importlib.import_module('lib.services.' + service)
+    service_classes[service] = getattr(service_module, service.capitalize())
+
 # Get CLI args
 parser = argparse.ArgumentParser()
 parser.add_argument("--format", help="output format", action="store")
 parser.add_argument("--regions", help="comma seperated list of regions to query", action="store")
+parser.add_argument("--skip", help="comma seperated list of services to skip", action="store")
 args = parser.parse_args()
 
 # Error message for input validation
@@ -52,7 +49,7 @@ def input_error (arg,provided,supported):
     print(f'{provided} is not a valid {arg}\nvalid {arg}s: {supported}')
     exit(1)
 
-# Override format/region if set in config and not provided as an argument
+# Set format/region/skip if set in config and not provided as an argument
 if 'format' in config and not args.format:
     if config['format'] in supported_formats:
         output_format = config['format']
@@ -63,8 +60,13 @@ if 'regions' in config and not args.regions:
         regions = config['regions']
     else:
         input_error('region',str(list(set(config['regions']) - set(regions))[0]),str(regions))
+if 'skip' in config and not args.skip:
+    if all(elem in supported_services for elem in config['skip']):
+        skip = config['skip']
+    else:
+        input_error('service',str(list(set(config['skip']) - set(supported_services))[0]),str(supported_services))
 
-# Override format/region if set by CLI args
+# Set format/region/skip if set by CLI args
 if args.format:
     if args.format in supported_formats:
         output_format = args.format
@@ -76,6 +78,13 @@ if args.regions:
         regions = arg_regions
     else:
         input_error('region',str(list(set(arg_regions) - set(regions))[0]),str(regions))
+if args.skip:
+    arg_skip = args.skip.split(',')
+    if all(elem in supported_services for elem in arg_skip):
+        skip = arg_skip
+    else:
+        input_error('service',str(list(set(arg_skip) - set(supported_services))[0]),str(supported_services))
+
 
 # Create resources and alarm objects
 resources = Resources()
@@ -90,22 +99,9 @@ async def get_resources(executor,regions):
     loop = asyncio.get_event_loop()
     blocking_tasks = []
     for region in regions:
-        blocking_tasks.append(loop.run_in_executor(executor, Apigateway, region))
-        blocking_tasks.append(loop.run_in_executor(executor, Asg, region))
-        blocking_tasks.append(loop.run_in_executor(executor, Aurora, region))
-        blocking_tasks.append(loop.run_in_executor(executor, Cloudfront, region))
-        blocking_tasks.append(loop.run_in_executor(executor, Dynamodb, region))
-        blocking_tasks.append(loop.run_in_executor(executor, Ec2, region))
-        blocking_tasks.append(loop.run_in_executor(executor, Ecs, region))
-        blocking_tasks.append(loop.run_in_executor(executor, Efs, region))
-        blocking_tasks.append(loop.run_in_executor(executor, Elasticache, region))
-        blocking_tasks.append(loop.run_in_executor(executor, Elb, region))
-        blocking_tasks.append(loop.run_in_executor(executor, Lambda, region))
-        blocking_tasks.append(loop.run_in_executor(executor, Mq, region))
-        blocking_tasks.append(loop.run_in_executor(executor, Rds, region))
-        blocking_tasks.append(loop.run_in_executor(executor, Redshift, region))
-        blocking_tasks.append(loop.run_in_executor(executor, Tg, region))
-        blocking_tasks.append(loop.run_in_executor(executor, Sqs, region))
+        for service in supported_services:
+            if service not in skip:
+                blocking_tasks.append(loop.run_in_executor(executor, service_classes[service], region))
     for completed in asyncio.as_completed(blocking_tasks):
         resources.add(await completed)
 
