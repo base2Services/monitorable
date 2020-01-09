@@ -14,6 +14,12 @@ class Efs:
             paginator = client.get_paginator('describe_file_systems')
             page_iterator = paginator.paginate()
             for page in page_iterator:
-                self.identifiers.extend([item['FileSystemId'] for item in page['FileSystems']])
+                self.identifiers.extend([{
+                    'id': item['FileSystemId'],
+                    'tags': [{
+                        'key': t['Key'],
+                        'value': t['Value']
+                    } for t in item.get('Tags', [])]
+                } for item in page['FileSystems']])
         except Exception: 
             pass

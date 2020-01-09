@@ -13,6 +13,16 @@ class Sqs:
             client = boto3.client('sqs', region_name=self.region)
             page = client.list_queues()
             if 'QueueUrls' in page:
-                self.identifiers = [item.split('/')[-1] for item in page['QueueUrls']]
-        except Exception: 
+                queues = [item for item in page['QueueUrls']]
+            for queue in queues:
+                tags = client.list_queue_tags(QueueUrl=queue)
+                self.identifiers.extend([{
+                    'id': queue.split('/')[-1],
+                    'tags': [{
+                        'key':t[0],
+                        'value':t[1]
+                    } for t in tags.get('Tags', {}).items()]
+                }])
+        except Exception as e:
+            print(e) 
             pass

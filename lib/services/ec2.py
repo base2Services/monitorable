@@ -15,6 +15,12 @@ class Ec2:
             page_iterator = paginator.paginate()
             for page in page_iterator:
                 for reservation in page['Reservations']:
-                    self.identifiers.extend([item['InstanceId'] for item in reservation['Instances']])
+                    self.identifiers.extend([{
+                        'id': item['InstanceId'],
+                        'tags': [{
+                            'key': t['Key'],
+                            'value': t['Value']
+                        } for t in item.get('Tags', [])]
+                    } for item in reservation['Instances']])
         except Exception: 
             pass

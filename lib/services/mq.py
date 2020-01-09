@@ -13,7 +13,37 @@ class Mq:
             client = boto3.client('mq', region_name=self.region)
             paginator = client.get_paginator('list_brokers')
             page_iterator = paginator.paginate()
+            brokers = []
             for page in page_iterator:
-                self.identifiers.extend(item['BrokerId'] for item in page['BrokerSummaries'])
+                brokers.extend([{
+                        'name': item['BrokerName'],
+                        'arn': item['BrokerArn'],
+                        'mode': item['DeploymentMode'] 
+                    } for item in page['BrokerSummaries']])
+            for broker in brokers:
+                tags = client.list_tags(ResourceArn=broker['arn'])['Tags']
+                if broker['mode'] == 'ACTIVE_STANDBY_MULTI_AZ':
+                    self.identifiers.extend([{
+                        'id': broker['name'] + '-1',
+                        'tags': [{
+                            'key':t[0],
+                            'value':t[1]
+                        } for t in tags.items()]
+                    }])
+                    self.identifiers.extend([{
+                        'id': broker['name'] + '-2',
+                        'tags': [{
+                            'key':t[0],
+                            'value':t[1]
+                        } for t in tags.items()]
+                    }])
+                if broker['mode'] == 'SINGLE_INSTANCE':
+                    self.identifiers.extend([{
+                        'id': broker['name'] + '-1',
+                        'tags': [{
+                            'key':t[0],
+                            'value':t[1]
+                        } for t in tags.items()]
+                    }])
         except Exception: 
             pass

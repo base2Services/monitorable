@@ -13,7 +13,13 @@ class Ecs:
             client = boto3.client('ecs', region_name=self.region)
             paginator = client.get_paginator('list_clusters')
             page_iterator = paginator.paginate()
+            clusterArns = []
             for page in page_iterator:
-                self.identifiers.extend([item.split('/')[-1] for item in page['clusterArns']])
+                clusterArns.extend([item for item in page['clusterArns']])
+            clusters = client.describe_clusters(clusters=clusterArns, include=['TAGS'])
+            self.identifiers.extend([{
+                'id': item['clusterName'],
+                'tags': item['tags']
+            } for item in clusters['clusters']])
         except Exception: 
             pass

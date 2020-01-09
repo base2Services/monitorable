@@ -14,6 +14,12 @@ class Asg:
             paginator = client.get_paginator('describe_auto_scaling_groups')
             page_iterator = paginator.paginate()
             for page in page_iterator:
-                self.identifiers.extend([item['AutoScalingGroupName'] for item in page['AutoScalingGroups']])
+                self.identifiers.extend([{
+                    'id': item['AutoScalingGroupName'],
+                    'tags': [{
+                        'key': t['Key'],
+                        'value': t['Value']
+                    } for t in item.get('Tags', [])]
+                } for item in page['AutoScalingGroups']])
         except Exception: 
             pass

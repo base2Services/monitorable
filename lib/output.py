@@ -13,10 +13,10 @@ class Output:
             alarm_resources = [dimension['Value'] for alarm in self.alarms.dimensions[region] for dimension in alarm['dimensions']]
             for resource, identifiers in regional_resources.items():
                 for identifier in identifiers:
-                    if identifier in alarm_resources:
-                        output += '\033[92m✓\033[0m      ' + region.ljust(16) + resource.ljust(16) + identifier + '\n'
+                    if identifier['id'] in alarm_resources:
+                        output += '\033[92m✓\033[0m      ' + region.ljust(16) + resource.ljust(16) + identifier['id'] + '\n'
                     else:
-                        output += '\033[91mx\033[0m      ' + region.ljust(16) + resource.ljust(16) + identifier + '\n'
+                        output += '\033[91mx\033[0m      ' + region.ljust(16) + resource.ljust(16) + identifier['id'] + '\n'
         return output
 
     def json(self):
