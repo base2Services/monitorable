@@ -21,7 +21,7 @@ class Ec2:
                             'key': t['Key'],
                             'value': t['Value']
                         } for t in item.get('Tags', [])]
-                    } for item in reservation['Instances']])
+                    } for item in reservation['Instances'] if "aws:autoscaling:groupName" not in [list(tag.values())[0] for tag in item.get('Tags', [])]])
         except Exception as e:
-            print('ERROR'.ljust(7) + self.region.ljust(16) + self.name.ljust(19) + str(e), flush=True) 
+            print('ERROR'.ljust(7) + self.region.ljust(16) + self.name.ljust(19) + str(e), flush=True)
             pass
