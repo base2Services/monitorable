@@ -31,6 +31,6 @@ class Alarms:
         _, columns = os.popen('stty size', 'r').read().split()
         max_bar_width = int(columns) - 45
         if len(self.dimensions[region]) > 0:
-            print('\033[92m✓\033[0m      ' + region.ljust(16) + 'alarms'.ljust(16) + str(len(self.dimensions[region])).rjust(4) + '  ' + '|' * min(len(self.dimensions[region]),max_bar_width))
+            print('\033[92m✓\033[0m       ' + region.ljust(16) + 'alarms'.ljust(16) + str(len(self.dimensions[region])).rjust(4) + '  ' + '|' * min(len(self.dimensions[region]),max_bar_width))
         else:
-            print('\033[91mx\033[0m      ' + region.ljust(16) + 'alarms'.ljust(16) + str(len(self.dimensions[region])).rjust(4) + '  ' + '|' * min(len(self.dimensions[region]),max_bar_width))
+            print('\033[91mx\033[0m       ' + region.ljust(16) + 'alarms'.ljust(16) + str(len(self.dimensions[region])).rjust(4) + '  ' + '|' * min(len(self.dimensions[region]),max_bar_width))

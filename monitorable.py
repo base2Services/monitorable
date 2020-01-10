@@ -42,12 +42,20 @@ parser = argparse.ArgumentParser()
 parser.add_argument("--format", help="output format", action="store")
 parser.add_argument("--regions", help="comma seperated list of regions to query", action="store")
 parser.add_argument("--skip", help="comma seperated list of services to skip", action="store")
+parser.add_argument("--tag", help="tag to group resources by", action="store")
 args = parser.parse_args()
 
 # Error message for input validation
 def input_error (arg,provided,supported):
     print(f'{provided} is not a valid {arg}\nvalid {arg}s: {supported}')
     exit(1)
+
+# Group by tags if tag provided
+if args.tag:
+    tag = args.tag
+    group = True
+else:
+    group = False
 
 # Set format/region/skip if set in config and not provided as an argument
 if 'format' in config and not args.format:
@@ -84,7 +92,6 @@ if args.skip:
         skip = arg_skip
     else:
         input_error('service',str(list(set(arg_skip) - set(supported_services))[0]),str(supported_services))
-
 
 # Create resources and alarm objects
 resources = Resources()
@@ -126,8 +133,12 @@ if output_format == 'audit':
 
 print('=' * int(columns))
 
+# Group by tags if tag provided
+if group:
+    resources.group_by_tag(tag)
+
 # Output in selected format
-output = Output(resources,alarms)
+output = Output(resources,alarms,group)
 if output_format == 'audit':
     print(output.audit())
 if output_format == 'json':
