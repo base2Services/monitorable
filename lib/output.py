@@ -68,6 +68,19 @@ class Output:
         else:
             return yaml.dump(self.strip_tags(self.resources.identifiers), default_flow_style=False)
 
+    def tags(self):
+        tagKeys = {'tags': {}}
+        for region_resources in self.resources.identifiers.values():
+            for resources in region_resources.values():
+                for resource in resources:
+                    for tag in resource['tags']:
+                        tagKeys['tags'].setdefault(tag['key'],{})
+                        tagKeys['tags'][tag['key']].setdefault('count',0)
+                        tagKeys['tags'][tag['key']].setdefault('resources',[])
+                        tagKeys['tags'][tag['key']]['count'] += 1
+                        tagKeys['tags'][tag['key']]['resources'].append(resource['id'])
+        return yaml.dump(tagKeys, default_flow_style=False)
+
     def cfn_monitor(self):
         output = '\n### cfn-monitor config ###\n\n'
         templates = {
