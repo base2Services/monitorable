@@ -25,6 +25,15 @@ class Resources:
         self.identifiers_by_tag.setdefault(tag,{})
         self.identifiers_by_tag[tag].setdefault(tag,{})
         self.identifiers_by_tag[tag] = self.resources_with_tag_key(tag)
+
+    def filter_by_tag(self,tag_filter):
+        filtered_identifiers = {} 
+        for tagKey, values in self.identifiers_by_tag.items():
+            for tagValue, _ in values.items():
+                if tagValue == tag_filter:
+                    filtered_identifiers.setdefault(tagKey,{})
+                    filtered_identifiers[tagKey][tagValue] = self.identifiers_by_tag[tagKey][tagValue]
+        self.identifiers_by_tag = filtered_identifiers
    
     def resources_with_tag_key(self,tag_key):
         identifiers = {}

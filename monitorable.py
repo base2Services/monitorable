@@ -43,6 +43,7 @@ parser.add_argument("--format", help="output format", action="store")
 parser.add_argument("--regions", help="comma seperated list of regions to query", action="store")
 parser.add_argument("--skip", help="comma seperated list of services to skip", action="store")
 parser.add_argument("--tag", help="tag to group resources by", action="store")
+parser.add_argument("--filter", help="tag value to limit resources to", action="store")
 args = parser.parse_args()
 
 # Error message for input validation
@@ -53,9 +54,14 @@ def input_error (arg,provided,supported):
 # Group by tags if tag provided
 if args.tag:
     tag = args.tag
-    group = True
+    tag_group = True
+    if args.filter:
+        tag_filter = args.filter
+    else:
+        tag_filter = False
 else:
-    group = False
+    tag_group = False
+    tag_filter = False
 
 # Set format/region/skip if set in config and not provided as an argument
 if 'format' in config and not args.format:
@@ -134,11 +140,15 @@ if output_format == 'audit':
 print('=' * int(columns))
 
 # Group by tags if tag provided
-if group:
+if tag_group:
     resources.group_by_tag(tag)
 
+# Filter by tag if tag and filter provided
+if tag_filter:
+    resources.filter_by_tag(tag_filter)
+
 # Output in selected format
-output = Output(resources,alarms,group)
+output = Output(resources,alarms,tag_group)
 if output_format == 'audit':
     print(output.audit())
 if output_format == 'json':
