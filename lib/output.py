@@ -30,6 +30,9 @@ class Output:
                         output[region][service].extend([resource['id']])
         return output
 
+    def flatten(self,identifier):
+        return list(identifier.values())[0] if type(identifier) is dict else identifier
+
     def audit(self):
         output = ''
         if self.grouped:
@@ -41,9 +44,9 @@ class Output:
                         for service, identifiers in regional_resources.items():
                             for identifier in identifiers:
                                 if identifier in alarm_resources:
-                                    output += '\033[92m✓\033[0m       ' + tagValue.ljust(20) + region.ljust(20) + service.ljust(20) + identifier + '\n'
+                                    output += '\033[92m✓\033[0m       ' + tagValue[:19].ljust(20) + region.ljust(20) + service[:19].ljust(20) + self.flatten(identifier) + '\n'
                                 else:
-                                    output += '\033[91mx\033[0m       ' + tagValue.ljust(20) + region.ljust(20) + service.ljust(20) + identifier + '\n'
+                                    output += '\033[91mx\033[0m       ' + tagValue[:19].ljust(20) + region.ljust(20) + service[:19].ljust(20) + self.flatten(identifier) + '\n'
         else:
             output += '\n' + 'Alarm'.ljust(8) + 'Region'.ljust(20) + 'Service'.ljust(20) + 'Identifier' + '\n\n'
             for region, regional_resources in self.strip_tags(self.resources.identifiers).items():
@@ -51,9 +54,9 @@ class Output:
                 for service, identifiers in regional_resources.items():
                     for identifier in identifiers:
                         if identifier in alarm_resources:
-                            output += '\033[92m✓\033[0m       ' + region.ljust(20) + service.ljust(20) + identifier + '\n'
+                            output += '\033[92m✓\033[0m       ' + region.ljust(20) + service[:19].ljust(20) + self.flatten(identifier) + '\n'
                         else:
-                            output += '\033[91mx\033[0m       ' + region.ljust(20) + service.ljust(20) + identifier + '\n'
+                            output += '\033[91mx\033[0m       ' + region.ljust(20) + service[:19].ljust(20) + self.flatten(identifier) + '\n'
         return output
 
     def json(self):
@@ -78,7 +81,7 @@ class Output:
                         tagKeys['tags'][tag['key']].setdefault('count',0)
                         tagKeys['tags'][tag['key']].setdefault('resources',[])
                         tagKeys['tags'][tag['key']]['count'] += 1
-                        tagKeys['tags'][tag['key']]['resources'].append(resource['id'])
+                        tagKeys['tags'][tag['key']]['resources'].append(self.flatten(resource['id']))
         return yaml.dump(tagKeys, default_flow_style=False)
 
     def cfn_monitor(self):
@@ -109,7 +112,7 @@ class Output:
                         region_output = {}
                         for resource, identifiers in regional_resources.items():
                             for identifier in identifiers:
-                                region_output[identifier] = templates[resource]
+                                region_output[self.flatten(identifier)] = templates[resource]
                         if region_output:
                             output += '# ' + region + '\n\n'
                             output += yaml.dump(region_output, default_flow_style=False)
@@ -119,7 +122,95 @@ class Output:
                 region_output = {}
                 for resource, identifiers in regional_resources.items():
                     for identifier in identifiers:
-                        region_output[identifier] = templates[resource]
+                        region_output[self.flatten(identifier)] = templates[resource]
+                if region_output:
+                    output += '# ' + region + '\n\n'
+                    output += yaml.dump(region_output, default_flow_style=False)
+                    output += '\n\n'
+        return output
+
+    def cfn_guardian(self):
+        output = '\n### cfn-guardian config ###\n\n'
+        templates = {
+            'lambdafunctions': {
+                'template': 'Lambda'
+            },
+            'apigateway': {
+                'template': 'ApiGateway'
+            },
+            'ecs': {
+                'template': 'EcsCluster'
+            },
+            'sqs': {
+                'template': 'SQSQueue'
+            },
+            'dynamodb': {
+                'template': 'DynamoDBTable'
+            },
+            'rds': {
+                'template': 'RDSInstance'
+            },
+            'aurora': {
+                'template': 'RDSClusterInstance'
+            },
+            'tg': {
+                'template': 'ApplicationTargetGroup',
+                'identifier': 'TargetGroup'
+            },
+            'efs': {
+                'template': 'ElasticFileSystem'
+            },
+            'cloudfront': {
+                'template': 'CloudFrontDistribution'
+            },
+            'ec2': {
+                'template': 'Ec2Instance'
+            },
+            'asg': {
+                'template': 'AutoscalingGroup'
+            },
+            'elb': {
+                'template': 'ElasticLoadBalancer'
+            },
+            'elasticache': {
+                'template': 'ElastiCacheReplicationGroup'
+            },
+            'mq': {
+                'template': 'AmazonMQBroker'
+            },
+            'redshift': {
+                'template': 'RedshiftCluster'
+            }
+        }
+        if self.grouped:
+            for tagKey, values in self.strip_tags(self.resources.identifiers_by_tag).items():
+                for tagValue, regions in values.items():
+                    output += '## ' + tagKey + ': ' + tagValue + '\n\n'
+                    for region, regional_resources in regions.items():
+                        region_output = {'Resources': {}}
+                        for resource, identifiers in regional_resources.items():
+                            for identifier in identifiers:
+                                region_output['Resources'].setdefault(templates[resource]['template'],[])
+                                if type(identifier) is dict:
+                                    identifier['Id'] = identifier.pop(templates[resource]['identifier'])
+                                    region_output['Resources'][templates[resource]['template']].append(identifier)
+                                else:
+                                    region_output['Resources'][templates[resource]['template']].append({'Id': identifier})
+                        if region_output:
+                            output += '# ' + region + '\n\n'
+                            output += yaml.dump(region_output, default_flow_style=False)
+                            output += '\n\n'
+        else:
+            for region, regional_resources in self.strip_tags(self.resources.identifiers).items():
+                region_output = {'Resources': {}}
+                for resource, identifiers in regional_resources.items():
+                    for identifier in identifiers:
+                        region_output['Resources'].setdefault(templates[resource]['template'],[])
+                        if type(identifier) is dict:
+                            identifier['Id'] = identifier.pop(templates[resource]['identifier'])
+                            region_output['Resources'][templates[resource]['template']].append(identifier)
+                        else:
+                            region_output['Resources'][templates[resource]['template']].append({'Id': identifier})
                 if region_output:
                     output += '# ' + region + '\n\n'
                     output += yaml.dump(region_output, default_flow_style=False)

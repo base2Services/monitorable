@@ -23,7 +23,7 @@ except:
 regions = [region['RegionName'] for region in boto3.client('ec2', 'ap-southeast-2').describe_regions()['Regions']]
 
 # Set default and supported output formats
-supported_formats = ['audit','json','yaml','tags','cfn-monitor']
+supported_formats = ['audit','json','yaml','tags','cfn-monitor','cfn-guardian']
 output_format = 'audit'
 
 # Set default skipped services
@@ -149,3 +149,5 @@ if output_format == 'tags':
     print(output.tags())
 if output_format == 'cfn-monitor':
     print(output.cfn_monitor())
+if output_format == 'cfn-guardian':
+    print(output.cfn_guardian())
