@@ -18,7 +18,7 @@ class Resources:
 
     def progress(self,resource):
         _, columns = os.popen('stty size', 'r').read().split()
-        max_bar_width = int(columns) - 45
+        max_bar_width = int(columns) - 50
         if len(resource.identifiers) > 0:
             print('\033[92m✓\033[0m       ' + resource.region.ljust(16) + resource.name[:19].ljust(20) + str(len(resource.identifiers)).rjust(4) + '  ' + '|' * min(len(resource.identifiers),max_bar_width))
         else:
