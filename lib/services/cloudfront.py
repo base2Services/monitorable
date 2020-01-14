@@ -4,9 +4,10 @@ class Cloudfront:
 
     def __init__(self,region):
         self.name = 'cloudfront'
-        self.region = 'us-east-1'
+        self.region = region
         self.identifiers = []
-        self.get_resources()
+        if region == 'us-east-1':
+            self.get_resources()
         
     def get_resources(self):
         try:
