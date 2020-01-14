@@ -6,6 +6,10 @@ class Ecs:
         self.name = 'ecs'
         self.region = region
         self.identifiers = []
+        self.templates = {
+            'cfn-monitor': 'ECSCluster',
+            'cfn-guardian': 'ECSCluster'
+        }
         self.get_resources()
         
     def get_resources(self):

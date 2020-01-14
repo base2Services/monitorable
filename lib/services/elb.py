@@ -6,6 +6,10 @@ class Elb:
         self.name = 'elb'
         self.region = region
         self.identifiers = []
+        self.templates = {
+            'cfn-monitor': 'ElasticLoadBalancer',
+            'cfn-guardian': 'ElasticLoadBalancer'
+        }
         self.get_resources()
         
     def get_resources(self):

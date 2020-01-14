@@ -6,6 +6,10 @@ class Mq:
         self.name = 'mq'
         self.region = region
         self.identifiers = []
+        self.templates = {
+            'cfn-monitor': 'AmazonMQBroker',
+            'cfn-guardian': 'AmazonMQBroker'
+        }
         self.get_resources()
         
     def get_resources(self):

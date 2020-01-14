@@ -6,6 +6,10 @@ class Elasticache:
         self.name = 'elasticache'
         self.region = region
         self.identifiers = []
+        self.templates = {
+            'cfn-monitor': 'ElastiCacheReplicationGroup',
+            'cfn-guardian': 'ElastiCacheReplicationGroup'
+        }
         self.get_resources()
         
     def get_resources(self):

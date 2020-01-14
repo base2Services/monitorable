@@ -6,6 +6,10 @@ class Redshift:
         self.name = 'redshift'
         self.region = region
         self.identifiers = []
+        self.templates = {
+            'cfn-monitor': 'RedshiftCluster',
+            'cfn-guardian': 'RedshiftCluster'
+        }
         self.get_resources()
         
     def get_resources(self):

@@ -6,6 +6,10 @@ class Asg:
         self.name = 'asg'
         self.region = region
         self.identifiers = []
+        self.templates = {
+            'cfn-monitor': 'AutoScalingGroup',
+            'cfn-guardian': 'AutoScalingGroup'
+        }
         self.get_resources()
         
     def get_resources(self):

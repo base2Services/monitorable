@@ -6,6 +6,10 @@ class Aurora:
         self.name = 'aurora'
         self.region = region
         self.identifiers = []
+        self.templates = {
+            'cfn-monitor': 'AuroraInstance',
+            'cfn-guardian': 'RDSClusterInstance'
+        }
         self.get_resources()
         
     def get_resources(self):

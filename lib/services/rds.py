@@ -6,6 +6,10 @@ class Rds:
         self.name = 'rds'
         self.region = region
         self.identifiers = []
+        self.templates = {
+            'cfn-monitor': 'NetworkELBTargetGroup',
+            'cfn-guardian': 'RDSInstance'
+        }
         self.get_resources()
         
     def get_resources(self):

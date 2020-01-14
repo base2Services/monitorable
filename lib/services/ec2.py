@@ -6,6 +6,10 @@ class Ec2:
         self.name = 'ec2'
         self.region = region
         self.identifiers = []
+        self.templates = {
+            'cfn-monitor': 'Ec2Instance',
+            'cfn-guardian': 'Ec2Instance'
+        }
         self.get_resources()
         
     def get_resources(self):

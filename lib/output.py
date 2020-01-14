@@ -86,25 +86,7 @@ class Output:
 
     def cfn_monitor(self):
         output = '\n### cfn-monitor config ###\n\n'
-        templates = {
-            'lambdafunctions': 'LambdaMetrics',
-            'apigateway': 'ApiGateway',
-            'ecs': 'ECSCluster',
-            'sqs': 'SQSQueue',
-            'dynamodb': 'DynamoDBTable',
-            'rds': 'RDSInstance',
-            'aurora': 'AuroraInstance',
-            'alb': 'ApplicationELBTargetGroup',
-            'nlb': 'NetworkELBTargetGroup',
-            'efs': 'ElasticFileSystem',
-            'cloudfront': 'CloudFrontDistribution',
-            'ec2': 'Ec2Instance',
-            'asg': 'AutoScalingGroup',
-            'elb': 'ElasticLoadBalancer',
-            'elasticache': 'ElastiCacheReplicationGroup',
-            'mq': 'AmazonMQBroker',
-            'redshift': 'RedshiftCluster'
-        }
+        templates = self.resources.templates
         if self.grouped:
             for tagKey, values in self.strip_tags(self.resources.identifiers_by_tag).items():
                 for tagValue, regions in values.items():
@@ -113,7 +95,7 @@ class Output:
                         region_output = {}
                         for resource, identifiers in regional_resources.items():
                             for identifier in identifiers:
-                                region_output[self.flatten(identifier)] = templates[resource]
+                                region_output[self.flatten(identifier)] = templates[resource]['cfn-monitor']
                         if region_output:
                             output += '# ' + region + '\n\n'
                             output += yaml.dump(region_output, default_flow_style=False)
@@ -123,7 +105,7 @@ class Output:
                 region_output = {}
                 for resource, identifiers in regional_resources.items():
                     for identifier in identifiers:
-                        region_output[self.flatten(identifier)] = templates[resource]
+                        region_output[self.flatten(identifier)] = templates[resource]['cfn-monitor']
                 if region_output:
                     output += '# ' + region + '\n\n'
                     output += yaml.dump(region_output, default_flow_style=False)
@@ -132,61 +114,7 @@ class Output:
 
     def cfn_guardian(self):
         output = '\n### cfn-guardian config ###\n\n'
-        templates = {
-            'lambdafunctions': {
-                'template': 'Lambda'
-            },
-            'apigateway': {
-                'template': 'ApiGateway'
-            },
-            'ecs': {
-                'template': 'EcsCluster'
-            },
-            'sqs': {
-                'template': 'SQSQueue'
-            },
-            'dynamodb': {
-                'template': 'DynamoDBTable'
-            },
-            'rds': {
-                'template': 'RDSInstance'
-            },
-            'aurora': {
-                'template': 'RDSClusterInstance'
-            },
-            'alb': {
-                'template': 'ApplicationTargetGroup',
-                'identifier': 'TargetGroup'
-            },
-            'nlb': {
-                'template': 'NetworkTargetGroup',
-                'identifier': 'TargetGroup'
-            },
-            'efs': {
-                'template': 'ElasticFileSystem'
-            },
-            'cloudfront': {
-                'template': 'CloudFrontDistribution'
-            },
-            'ec2': {
-                'template': 'Ec2Instance'
-            },
-            'asg': {
-                'template': 'AutoscalingGroup'
-            },
-            'elb': {
-                'template': 'ElasticLoadBalancer'
-            },
-            'elasticache': {
-                'template': 'ElastiCacheReplicationGroup'
-            },
-            'mq': {
-                'template': 'AmazonMQBroker'
-            },
-            'redshift': {
-                'template': 'RedshiftCluster'
-            }
-        }
+        templates = self.resources.templates
         if self.grouped:
             for tagKey, values in self.strip_tags(self.resources.identifiers_by_tag).items():
                 for tagValue, regions in values.items():
@@ -195,12 +123,12 @@ class Output:
                         region_output = {'Resources': {}}
                         for resource, identifiers in regional_resources.items():
                             for identifier in identifiers:
-                                region_output['Resources'].setdefault(templates[resource]['template'],[])
+                                region_output['Resources'].setdefault(templates[resource]['cfn-guardian'],[])
                                 if type(identifier) is dict:
                                     identifier['Id'] = identifier.pop(templates[resource]['identifier'])
-                                    region_output['Resources'][templates[resource]['template']].append(identifier)
+                                    region_output['Resources'][templates[resource]['cfn-guardian']].append(identifier)
                                 else:
-                                    region_output['Resources'][templates[resource]['template']].append({'Id': identifier})
+                                    region_output['Resources'][templates[resource]['cfn-guardian']].append({'Id': identifier})
                         if region_output:
                             output += '# ' + region + '\n\n'
                             output += yaml.dump(region_output, default_flow_style=False)
@@ -210,12 +138,12 @@ class Output:
                 region_output = {'Resources': {}}
                 for resource, identifiers in regional_resources.items():
                     for identifier in identifiers:
-                        region_output['Resources'].setdefault(templates[resource]['template'],[])
+                        region_output['Resources'].setdefault(templates[resource]['cfn-guardian'],[])
                         if type(identifier) is dict:
                             identifier['Id'] = identifier.pop(templates[resource]['identifier'])
-                            region_output['Resources'][templates[resource]['template']].append(identifier)
+                            region_output['Resources'][templates[resource]['cfn-guardian']].append(identifier)
                         else:
-                            region_output['Resources'][templates[resource]['template']].append({'Id': identifier})
+                            region_output['Resources'][templates[resource]['cfn-guardian']].append({'Id': identifier})
                 if region_output:
                     output += '# ' + region + '\n\n'
                     output += yaml.dump(region_output, default_flow_style=False)

@@ -6,6 +6,10 @@ class Lambdafunctions:
         self.name = 'lambdafunctions'
         self.region = region
         self.identifiers = []
+        self.templates = {
+            'cfn-monitor': 'LambdaMetrics',
+            'cfn-guardian': 'Lambda'
+        }
         self.get_resources()
         
     def get_resources(self):

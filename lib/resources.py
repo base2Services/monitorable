@@ -6,11 +6,14 @@ class Resources:
     def __init__(self):
         self.identifiers = {}
         self.identifiers_by_tag = {}
+        self.templates = {}
         
     def add(self,resource):
         self.identifiers.setdefault(resource.region,{})
         self.identifiers[resource.region].setdefault(resource.name,[])
         self.identifiers[resource.region][resource.name] = resource.identifiers
+        if hasattr(resource, 'templates'):
+            self.templates[resource.name] = resource.templates
         self.progress(resource)
 
     def progress(self,resource):

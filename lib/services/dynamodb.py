@@ -6,6 +6,10 @@ class Dynamodb:
         self.name = 'dynamodb'
         self.region = region
         self.identifiers = []
+        self.templates = {
+            'cfn-monitor': 'DynamoDBTable',
+            'cfn-guardian': 'DynamoDBTable'
+        }
         self.get_resources()
         
     def get_resources(self):

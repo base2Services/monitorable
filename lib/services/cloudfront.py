@@ -6,6 +6,10 @@ class Cloudfront:
         self.name = 'cloudfront'
         self.region = region
         self.identifiers = []
+        self.templates = {
+            'cfn-monitor': 'CloudFrontDistribution',
+            'cfn-guardian': 'CloudFrontDistribution'
+        }
         if region == 'us-east-1':
             self.get_resources()
         

@@ -6,6 +6,10 @@ class Apigateway:
         self.name = 'apigateway'
         self.region = region
         self.identifiers = []
+        self.templates = {
+            'cfn-monitor': 'ApiGateway',
+            'cfn-guardian': 'ApiGateway'
+        }
         self.get_resources()
         
     def get_resources(self):

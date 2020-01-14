@@ -6,6 +6,11 @@ class Alb:
         self.name = 'alb'
         self.region = region
         self.identifiers = []
+        self.templates = {
+            'identifier': 'TargetGroup',
+            'cfn-monitor': 'ApplicationELBTargetGroup',
+            'cfn-guardian': 'ApplicationTargetGroup'
+        }
         self.get_resources()
         
     def get_resources(self):

@@ -6,6 +6,10 @@ class Sqs:
         self.name = 'sqs'
         self.region = region
         self.identifiers = []
+        self.templates = {
+            'cfn-monitor': 'SQSQueue',
+            'cfn-guardian': 'SQSQueue'
+        }
         self.get_resources()
         
     def get_resources(self):

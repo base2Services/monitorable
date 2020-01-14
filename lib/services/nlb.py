@@ -6,6 +6,11 @@ class Nlb:
         self.name = 'nlb'
         self.region = region
         self.identifiers = []
+        self.templates = {
+            'identifier': 'TargetGroup',
+            'cfn-monitor': 'NetworkELBTargetGroup',
+            'cfn-guardian': 'NetworkTargetGroup'
+        }
         self.get_resources()
         
     def get_resources(self):

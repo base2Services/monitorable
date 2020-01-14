@@ -6,6 +6,10 @@ class Efs:
         self.name = 'efs'
         self.region = region
         self.identifiers = []
+        self.templates = {
+            'cfn-monitor': 'ElasticFileSystem',
+            'cfn-guardian': 'ElasticFileSystem'
+        }
         self.get_resources()
         
     def get_resources(self):
