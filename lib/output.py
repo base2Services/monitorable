@@ -43,7 +43,7 @@ class Output:
                         alarm_resources = [dimension['Value'] for alarm in self.alarms.dimensions[region] for dimension in alarm['dimensions']]
                         for service, identifiers in regional_resources.items():
                             for identifier in identifiers:
-                                if identifier in alarm_resources:
+                                if self.flatten(identifier) in alarm_resources:
                                     output += '\033[92m✓\033[0m       ' + tagValue[:19].ljust(20) + region.ljust(20) + service[:19].ljust(20) + self.flatten(identifier) + '\n'
                                 else:
                                     output += '\033[91mx\033[0m       ' + tagValue[:19].ljust(20) + region.ljust(20) + service[:19].ljust(20) + self.flatten(identifier) + '\n'
@@ -53,7 +53,7 @@ class Output:
                 alarm_resources = [dimension['Value'] for alarm in self.alarms.dimensions[region] for dimension in alarm['dimensions']]
                 for service, identifiers in regional_resources.items():
                     for identifier in identifiers:
-                        if identifier in alarm_resources:
+                        if self.flatten(identifier) in alarm_resources:
                             output += '\033[92m✓\033[0m       ' + region.ljust(20) + service[:19].ljust(20) + self.flatten(identifier) + '\n'
                         else:
                             output += '\033[91mx\033[0m       ' + region.ljust(20) + service[:19].ljust(20) + self.flatten(identifier) + '\n'
