@@ -94,7 +94,8 @@ class Output:
             'dynamodb': 'DynamoDBTable',
             'rds': 'RDSInstance',
             'aurora': 'AuroraInstance',
-            'tg': 'ApplicationELBTargetGroup',
+            'alb': 'ApplicationELBTargetGroup',
+            'nlb': 'NetworkELBTargetGroup',
             'efs': 'ElasticFileSystem',
             'cloudfront': 'CloudFrontDistribution',
             'ec2': 'Ec2Instance',
@@ -153,8 +154,12 @@ class Output:
             'aurora': {
                 'template': 'RDSClusterInstance'
             },
-            'tg': {
+            'alb': {
                 'template': 'ApplicationTargetGroup',
+                'identifier': 'TargetGroup'
+            },
+            'nlb': {
+                'template': 'NetworkTargetGroup',
                 'identifier': 'TargetGroup'
             },
             'efs': {

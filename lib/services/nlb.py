@@ -1,9 +1,9 @@
 import boto3
 
-class Tg:
+class Nlb:
 
     def __init__(self,region):
-        self.name = 'tg'
+        self.name = 'nlb'
         self.region = region
         self.identifiers = []
         self.get_resources()
@@ -26,16 +26,17 @@ class Tg:
                         for tg in target_group_arns:
                             if tg_tags['ResourceArn'] == tg['arn']:
                                 for lb_arn in tg['lb']:
-                                    self.identifiers.append({
-                                        'id': {
-                                            'TargetGroup': tg['arn'].split(':')[-1],
-                                            'LoadBalancer': lb_arn.split('loadbalancer/')[1]
-                                        },
-                                        'tags': [{
-                                            'key': t['Key'],
-                                            'value': t['Value']
-                                        } for t in tg_tags['Tags']]
-                                    })
+                                    if lb_arn.split('/')[1] == 'net':
+                                        self.identifiers.append({
+                                            'id': {
+                                                'TargetGroup': tg['arn'].split(':')[-1],
+                                                'LoadBalancer': lb_arn.split('loadbalancer/')[1]
+                                            },
+                                            'tags': [{
+                                                'key': t['Key'],
+                                                'value': t['Value']
+                                            } for t in tg_tags['Tags']]
+                                        })
         except Exception as e:
             print('ERROR'.ljust(7) + self.region.ljust(16) + self.name.ljust(19) + str(e), flush=True) 
             pass
