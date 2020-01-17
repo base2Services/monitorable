@@ -16,12 +16,13 @@ class Alarms:
             page_iterator = paginator.paginate()
             for page in page_iterator:
                 for alarm in page['MetricAlarms']:
-                    self.dimensions[region].append(
-                        {
-                            'alarm_name': alarm['AlarmName'],
-                            'dimensions': alarm['Dimensions']
-                        }
-                    )
+                    if alarm['AlarmActions'] and 'scalingPolicy' not in alarm['AlarmActions'][0]:
+                        self.dimensions[region].append(
+                            {
+                                'alarm_name': alarm['AlarmName'],
+                                'dimensions': alarm['Dimensions']
+                            }
+                        )
         except Exception as e:
             print('ERROR'.ljust(7) + region.ljust(16) + self.name.ljust(19) + str(e)) 
             pass
