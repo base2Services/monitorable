@@ -19,6 +19,7 @@ from pathlib import Path
 parser = argparse.ArgumentParser()
 parser.add_argument("--format", help="output format", action="store")
 parser.add_argument("--config", help="config file", action="store", default="config.yaml")
+parser.add_argument("--output", help="output config file", action="store",)
 parser.add_argument("--regions", help="comma seperated list of regions to query", action="store")
 parser.add_argument("--skip", help="comma seperated list of services to skip", action="store")
 parser.add_argument("--tag", help="tag to group resources by", action="store")
@@ -179,3 +180,20 @@ if output_format == 'cfn-monitor':
     print(output.cfn_monitor())
 if output_format == 'cfn-guardian':
     print(output.cfn_guardian())
+
+if args.output:
+    _, file_extension = os.path.splitext(args.output)
+    try:
+        if file_extension == '.yaml':
+            f = open(args.output, 'w+')
+            f.write(output.yaml())
+            f.close()
+        elif file_extension == '.json':
+            f = open(args.output, 'w+')
+            f.write(output.json())
+            f.close()
+        else:
+            print("nothing done")
+    except Exception as err:
+        print("Unknown error writing config file", err)
+        exit(-1)
