@@ -15,7 +15,6 @@ from lib.output import Output
 from lib.alarms import Alarms
 from pathlib import Path
 
-
 # Get CLI args
 parser = argparse.ArgumentParser()
 parser.add_argument("--format", help="output format", action="store")
@@ -59,6 +58,7 @@ service_classes = {}
 for service in supported_services:
     service_module = importlib.import_module('lib.services.' + service)
     service_classes[service] = getattr(service_module, service.capitalize())
+
 
 # Error message for input validation
 def input_error(arg, provided, supported):
