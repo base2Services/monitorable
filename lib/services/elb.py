@@ -1,8 +1,9 @@
 import boto3
 
+
 class Elb:
 
-    def __init__(self,region):
+    def __init__(self, region):
         self.name = 'elb'
         self.region = region
         self.identifiers = []
@@ -11,7 +12,7 @@ class Elb:
             'cfn-guardian': 'ElasticLoadBalancer'
         }
         self.get_resources()
-        
+
     def get_resources(self):
         try:
             client = boto3.client('elb', region_name=self.region)
@@ -31,5 +32,5 @@ class Elb:
                         } for t in item['Tags']]
                     } for item in tags['TagDescriptions']])
         except Exception as e:
-            print('ERROR'.ljust(7) + self.region.ljust(16) + self.name.ljust(19) + str(e), flush=True) 
+            print('ERROR'.ljust(7) + self.region.ljust(16) + self.name.ljust(19) + str(e), flush=True)
             pass

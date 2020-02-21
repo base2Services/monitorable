@@ -1,8 +1,9 @@
 import boto3
 
+
 class Ecs:
 
-    def __init__(self,region):
+    def __init__(self, region):
         self.name = 'ecs'
         self.region = region
         self.identifiers = []
@@ -11,7 +12,7 @@ class Ecs:
             'cfn-guardian': 'ECSCluster'
         }
         self.get_resources()
-        
+
     def get_resources(self):
         try:
             client = boto3.client('ecs', region_name=self.region)
@@ -27,5 +28,5 @@ class Ecs:
                     'tags': item['tags']
                 } for item in clusters['clusters']])
         except Exception as e:
-            print('ERROR'.ljust(7) + self.region.ljust(16) + self.name.ljust(19) + str(e), flush=True) 
+            print('ERROR'.ljust(7) + self.region.ljust(16) + self.name.ljust(19) + str(e), flush=True)
             pass
