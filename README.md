@@ -6,10 +6,19 @@ Query an AWS account for resources monitorable by cloudwatch alarms and report o
 
 Export IAM credentials with read only permissions to the AWS account you want to query 
 
+### Access Keys
+
 ```bash
 export AWS_ACCESS_KEY_ID="XXXXXXXXXXXXXXXXXXXXX"
 export AWS_SECRET_ACCESS_KEY="XXXXXXXXXXXXXXXXXXXXX"
 export AWS_SESSION_TOKEN="XXXXXXXXXXXXXXXXXXXXX"
+```
+
+### Profile reference
+
+Using the appropriate name from ```~/.aws/credentials```
+```bash
+export AWS_PROFILE="XXXXXXXXXXXXXXXXXXXXX"
 ```
 
 ## Usage
