@@ -32,6 +32,8 @@ config = {}
 if Path(args.config).is_file():
     try:
         config = yaml.load(open(args.config), Loader=yaml.SafeLoader)
+        if not config:
+            config = {}
     except OSError as err:
         print("Error: ", err.filename, ":", err.strerror)
         exit(-1)
