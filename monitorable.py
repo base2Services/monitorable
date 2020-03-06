@@ -168,34 +168,45 @@ if tag_group:
 if tag_filter:
     resources.filter_by_tag(tag_filter)
 
+# Open file for output
+if args.output:
+    f = open(args.output, 'w+')
+
 # Output in selected format
 output = Output(resources, alarms, tag_group)
 if output_format == 'audit':
-    print(output.audit())
+    if args.output:
+        f.write(output.audit())
+    else:
+        print(output.audit())
 if output_format == 'json':
-    print(output.json())
+    if args.output:
+        f.write(output.json())
+    else:
+        print(output.json())
 if output_format == 'yaml':
-    print(output.yaml())
+    if args.output:
+        f.write(output.yaml())
+    else:
+        print(output.yaml())
 if output_format == 'tags':
-    print(output.tags())
+    if args.output:
+        f.write(output.tags())
+    else:
+        print(output.tags())
 if output_format == 'cfn-monitor':
-    print(output.cfn_monitor())
+    if args.output:
+        f.write(output.cfn_monitor())
+    else:
+        print(output.cfn_monitor())
 if output_format == 'cfn-guardian':
-    print(output.cfn_guardian())
+    if args.output:
+        f.write(output.cfn_guardian())
+    else:
+        print(output.cfn_guardian())
 
+# Close output file
 if args.output:
-    _, file_extension = os.path.splitext(args.output)
-    try:
-        if file_extension == '.yaml':
-            f = open(args.output, 'w+')
-            f.write(output.yaml())
-            f.close()
-        elif file_extension == '.json':
-            f = open(args.output, 'w+')
-            f.write(output.json())
-            f.close()
-        else:
-            print("nothing done")
-    except Exception as err:
-        print("Unknown error writing config file", err)
-        exit(-1)
+    f.close()
+    print('Output written to file: ' + args.output)
+    print('=' * int(columns))
