@@ -1,8 +1,9 @@
 import boto3
 
+
 class Efs:
 
-    def __init__(self,region):
+    def __init__(self, region):
         self.name = 'efs'
         self.region = region
         self.identifiers = []
@@ -11,9 +12,9 @@ class Efs:
             'cfn-guardian': 'ElasticFileSystem'
         }
         self.get_resources()
-        
+
     def get_resources(self):
-        try: 
+        try:
             client = boto3.client('efs', region_name=self.region)
             paginator = client.get_paginator('describe_file_systems')
             page_iterator = paginator.paginate()
@@ -26,5 +27,5 @@ class Efs:
                     } for t in item.get('Tags', [])]
                 } for item in page['FileSystems']])
         except Exception as e:
-            print('ERROR'.ljust(7) + self.region.ljust(16) + self.name.ljust(19) + str(e), flush=True) 
+            print('ERROR'.ljust(7) + self.region.ljust(16) + self.name.ljust(19) + str(e), flush=True)
             pass

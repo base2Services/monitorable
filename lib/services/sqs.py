@@ -1,8 +1,9 @@
 import boto3
 
+
 class Sqs:
 
-    def __init__(self,region):
+    def __init__(self, region):
         self.name = 'sqs'
         self.region = region
         self.identifiers = []
@@ -11,7 +12,7 @@ class Sqs:
             'cfn-guardian': 'SQSQueue'
         }
         self.get_resources()
-        
+
     def get_resources(self):
         try:
             client = boto3.client('sqs', region_name=self.region)
@@ -24,10 +25,10 @@ class Sqs:
                 self.identifiers.extend([{
                     'id': queue.split('/')[-1],
                     'tags': [{
-                        'key':t[0],
-                        'value':t[1]
+                        'key': t[0],
+                        'value': t[1]
                     } for t in tags.get('Tags', {}).items()]
                 }])
         except Exception as e:
-            print('ERROR'.ljust(7) + self.region.ljust(16) + self.name.ljust(19) + str(e), flush=True) 
+            print('ERROR'.ljust(7) + self.region.ljust(16) + self.name.ljust(19) + str(e), flush=True)
             pass

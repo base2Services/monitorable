@@ -1,8 +1,9 @@
 import boto3
 
+
 class Dynamodb:
 
-    def __init__(self,region):
+    def __init__(self, region):
         self.name = 'dynamodb'
         self.region = region
         self.identifiers = []
@@ -11,7 +12,7 @@ class Dynamodb:
             'cfn-guardian': 'DynamoDBTable'
         }
         self.get_resources()
-        
+
     def get_resources(self):
         try:
             client = boto3.client('dynamodb', region_name=self.region)
@@ -31,5 +32,5 @@ class Dynamodb:
                     } for t in tags]
                 }])
         except Exception as e:
-            print('ERROR'.ljust(7) + self.region.ljust(16) + self.name.ljust(19) + str(e), flush=True) 
+            print('ERROR'.ljust(7) + self.region.ljust(16) + self.name.ljust(19) + str(e), flush=True)
             pass

@@ -1,8 +1,9 @@
 import boto3
 
+
 class Cloudfront:
 
-    def __init__(self,region):
+    def __init__(self, region):
         self.name = 'cloudfront'
         self.region = region
         self.identifiers = []
@@ -12,7 +13,7 @@ class Cloudfront:
         }
         if region == 'us-east-1':
             self.get_resources()
-        
+
     def get_resources(self):
         try:
             client = boto3.client('cloudfront', region_name=self.region)
@@ -35,5 +36,5 @@ class Cloudfront:
                     } for t in tags]
                 }])
         except Exception as e:
-            print('ERROR'.ljust(7) + self.region.ljust(16) + self.name.ljust(19) + str(e), flush=True) 
+            print('ERROR'.ljust(7) + self.region.ljust(16) + self.name.ljust(19) + str(e), flush=True)
             pass

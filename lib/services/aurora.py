@@ -1,8 +1,9 @@
 import boto3
 
+
 class Aurora:
 
-    def __init__(self,region):
+    def __init__(self, region):
         self.name = 'aurora'
         self.region = region
         self.identifiers = []
@@ -11,7 +12,7 @@ class Aurora:
             'cfn-guardian': 'RDSClusterInstance'
         }
         self.get_resources()
-        
+
     def get_resources(self):
         try:
             client = boto3.client('rds', region_name=self.region)
@@ -33,5 +34,5 @@ class Aurora:
                     } for t in tags]
                 }])
         except Exception as e:
-            print('ERROR'.ljust(7) + self.region.ljust(16) + self.name.ljust(19) + str(e), flush=True) 
+            print('ERROR'.ljust(7) + self.region.ljust(16) + self.name.ljust(19) + str(e), flush=True)
             pass

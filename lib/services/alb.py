@@ -1,8 +1,9 @@
 import boto3
 
+
 class Alb:
 
-    def __init__(self,region):
+    def __init__(self, region):
         self.name = 'alb'
         self.region = region
         self.identifiers = []
@@ -12,7 +13,7 @@ class Alb:
             'cfn-guardian': 'ApplicationTargetGroup'
         }
         self.get_resources()
-        
+
     def get_resources(self):
         try:
             client = boto3.client('elbv2', region_name=self.region)
@@ -43,5 +44,5 @@ class Alb:
                                             } for t in tg_tags['Tags']]
                                         })
         except Exception as e:
-            print('ERROR'.ljust(7) + self.region.ljust(16) + self.name.ljust(19) + str(e), flush=True) 
+            print('ERROR'.ljust(7) + self.region.ljust(16) + self.name.ljust(19) + str(e), flush=True)
             pass
