@@ -39,6 +39,9 @@ argument | example value | description
 --- | --- | ---
 format | audit | query monitorable resources and cloudwatch alarms in each region and report on alarm coverage of resources
 format | cfn-monitor | query monitorable resources and output in cfn-monitor alarms config format with default templates
+format | cfn-guardian | query monitorable resources and output in cfn-guardian alarms config format with default templates
+format | tags | shows all tags on monitorable resources and lists which resources have each tag. useful to discover 'tag coverage' and to help to choose good candidates to use with the --tag argument
+tag | Environment | groups output by different tag values. e.g. `--tag Environment` will group resources by those tagged with `Environment:prod` and `Environment:stage`
 format | json | query monitorable resources and output in json format
 format | yaml | query monitorable resources and output in yaml format
 regions | ap-southeast-2,us-west-2 | query monitorable resources only within the regions provided
