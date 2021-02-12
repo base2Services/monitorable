@@ -24,7 +24,7 @@ class Mq:
                     'name': item['BrokerName'],
                     'arn': item['BrokerArn'],
                     'mode': item['DeploymentMode']
-                } for item in page['BrokerSummaries']])
+                } for item in page['BrokerSummaries'] if item['EngineType'] != "RabbitMQ"]) # Skip any rabbit brokers as they have their own type
             for broker in brokers:
                 tags = client.list_tags(ResourceArn=broker['arn'])['Tags']
                 if broker['mode'] == 'ACTIVE_STANDBY_MULTI_AZ':
@@ -53,3 +53,4 @@ class Mq:
         except Exception as e:
             print('ERROR'.ljust(7) + self.region.ljust(16) + self.name.ljust(19) + str(e), flush=True)
             pass
+
