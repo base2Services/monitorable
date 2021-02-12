@@ -25,9 +25,10 @@ class Rabbitqueue:
                     'arn': item['BrokerArn']
                 } for item in page['BrokerSummaries'] if item['EngineType'] == 'RabbitMQ'])
 
+
+            client = boto3.client('cloudwatch', region_name=self.region)
+            paginator = client.get_paginator('list_metrics')
             for broker in brokers:
-                client = boto3.client('cloudwatch', region_name=self.region)
-                paginator = client.get_paginator('list_metrics')
                 metrics = paginator.paginate(
                     Namespace='AWS/AmazonMQ',
                     Dimensions=[
