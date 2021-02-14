@@ -8,6 +8,7 @@ class Rabbitmq:
         self.region = region
         self.identifiers = []
         self.templates = {
+            'cfn-monitor': 'NotSupportedAmazonMQRabbitMQBroker',
             'cfn-guardian': 'AmazonMQRabbitMQBroker'
         }
         self.get_resources()

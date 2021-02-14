@@ -9,6 +9,7 @@ class Rabbitqueue:
         self.identifiers = []
         self.templates = {
             'identifier': 'Broker',
+            'cfn-monitor': 'NotSupportedAmazonMQRabbitMQQueue',
             'cfn-guardian': 'AmazonMQRabbitMQQueue'
         }
         self.get_resources()

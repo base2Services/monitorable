@@ -9,6 +9,7 @@ class Rabbitnode:
         self.identifiers = []
         self.templates = {
             'identifier': 'Broker',
+            'cfn-monitor': 'NotSupportedAmazonMQRabbitMQNode',
             'cfn-guardian': 'AmazonMQRabbitMQNode'
         }
         self.get_resources()
