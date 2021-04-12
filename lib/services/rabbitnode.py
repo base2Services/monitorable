@@ -20,11 +20,14 @@ class Rabbitnode:
             mq_paginator = mq_client.get_paginator('list_brokers')
             page_iterator = mq_paginator.paginate()
             brokers = []
-            for page in page_iterator:
-                brokers.extend([{
-                    'name': item['BrokerName'],
-                    'arn': item['BrokerArn']
-                } for item in page['BrokerSummaries'] if item['EngineType'] == 'RabbitMQ'])
+            try:
+                for page in page_iterator:
+                    brokers.extend([{
+                        'name': item['BrokerName'],
+                        'arn': item['BrokerArn']
+                        } for item in page['BrokerSummaries'] if item['EngineType'] == 'RabbitMQ'])
+            except mq_client.exceptions.ForbiddenException:
+                pass
 
             client = boto3.client('cloudwatch', region_name=self.region)
             paginator = client.get_paginator('list_metrics')

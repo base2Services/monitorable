@@ -19,11 +19,14 @@ class Rabbitmq:
             paginator = client.get_paginator('list_brokers')
             page_iterator = paginator.paginate()
             brokers = []
-            for page in page_iterator:
-                brokers.extend([{
-                    'name': item['BrokerName'],
-                    'arn': item['BrokerArn']
-                } for item in page['BrokerSummaries'] if item['EngineType'] == 'RabbitMQ' ])
+            try:
+                for page in page_iterator:
+                    brokers.extend([{
+                        'name': item['BrokerName'],
+                        'arn': item['BrokerArn']
+                        } for item in page['BrokerSummaries'] if item['EngineType'] == 'RabbitMQ' ])
+            except client.exceptions.ForbiddenException:
+                pass
             for broker in brokers:
                 tags = client.list_tags(ResourceArn=broker['arn'])['Tags']
                 self.identifiers.extend([{
