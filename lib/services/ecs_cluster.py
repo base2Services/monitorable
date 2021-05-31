@@ -1,10 +1,10 @@
 import boto3
 
 
-class Ecs:
+class Ecs_cluster:
 
     def __init__(self, region):
-        self.name = 'ecs'
+        self.name = 'ecsclusters'
         self.region = region
         self.identifiers = []
         self.templates = {
