@@ -38,21 +38,40 @@ class Ecs_services:
                             split = lambda lst, sz: [lst[i:i+sz] for i in range(0, len(lst), sz)]
                             splitServiceArns = split(serviceArns, 10)
                             for array in splitServiceArns:
-                                self.identifiers.extend({
-                                    'id': {
-                                        'ServiceName': item['serviceName'],
-                                        'Cluster': clusterName
-                                    },
-                                    'tags': item['tags']
-                                } for item in client.describe_services(cluster=clusterName, services=array, include=['TAGS'])['services'])
+                                try:
+                                    self.identifiers.extend({
+                                        'id': {
+                                            'ServiceName': item['serviceName'],
+                                            'Cluster': clusterName
+                                        },
+                                        'tags': item['tags']
+                                    } for item in client.describe_services(cluster=clusterName, services=array, include=['TAGS'])['services'])
+                                except KeyError:
+                                    self.identifiers.extend({
+                                            'id': {
+                                                'ServiceName': item['serviceName'],
+                                                'Cluster': clusterName
+                                            },
+                                            'tags': ''
+                                        } for item in client.describe_services(cluster=clusterName, services=array)['services'])
                         else:
-                            self.identifiers.extend({
-                                    'id': {
-                                        'ServiceName': item['serviceName'],
-                                        'Cluster': clusterName
-                                    },
-                                    'tags': item['tags']
-                                } for item in client.describe_services(cluster=clusterName, services=serviceArns, include=['TAGS'])['services'])
+                            try:
+                                self.identifiers.extend({
+                                        'id': {
+                                            'ServiceName': item['serviceName'],
+                                            'Cluster': clusterName
+                                        },
+                                        'tags': item['tags']
+                                    } for item in client.describe_services(cluster=clusterName, services=serviceArns, include=['TAGS'])['services'])
+                            except KeyError:
+                                self.identifiers.extend({
+                                        'id': {
+                                            'ServiceName': item['serviceName'],
+                                            'Cluster': clusterName
+                                        },
+                                        'tags': ''
+                                    } for item in client.describe_services(cluster=clusterName, services=serviceArns)['services'])
+
 
         except Exception as e:
             print('ERROR'.ljust(7) + self.region.ljust(16) + self.name.ljust(19) + str(e), flush=True)
