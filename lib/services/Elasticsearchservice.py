@@ -1,25 +1,25 @@
 import boto3
 
-class elastic_search:
+class Elasticsearchservice:
 
     def __init__(self, region):
         self.name = 'elasticsearch'
         self.region = region
         self.identifiers = []
         self.templates = {
-            'cfn-monitor': 'ElasticSearch',
-            'cfn-guardian': 'ElasticSearch'
+            'cfn-monitor': 'elasticsearch',
+            'cfn-guardian': 'elasticsearch'
         }
         self.get_resources()
 
     def get_resources(self):
         try:
             client = boto3.client('es', region_name=self.region)
-            page = client.describe_elasticsearch_domains()
+            page = client.list_domain_names()
             for item in page['DomainNames']:
                 self.identifiers.extend([{
-                'DomainName': item['DomainNames'],
-                'tags': item['Tags']
+                'DomainName': item['DomainName'],
+                # 'tags': item['tags']
                 }])
 
         except Exception as e:
