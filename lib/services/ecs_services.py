@@ -45,6 +45,14 @@ class Ecs_services:
                                     },
                                     'tags': item['tags']
                                 } for item in client.describe_services(cluster=clusterName, services=array, include=['TAGS'])['services'])
+                        else:
+                            self.identifiers.extend({
+                                    'id': {
+                                        'ServiceName': item['serviceName'],
+                                        'Cluster': clusterName
+                                    },
+                                    'tags': item['tags']
+                                } for item in client.describe_services(cluster=clusterName, services=serviceArns, include=['TAGS'])['services'])
 
         except Exception as e:
             print('ERROR'.ljust(7) + self.region.ljust(16) + self.name.ljust(19) + str(e), flush=True)
