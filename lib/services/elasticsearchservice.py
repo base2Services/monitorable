@@ -7,8 +7,8 @@ class Elasticsearchservice:
         self.region = region
         self.identifiers = []
         self.templates = {
-            'cfn-monitor': 'elasticsearch',
-            'cfn-guardian': 'elasticsearch'
+            'cfn-monitor': 'ElasticSearch',
+            'cfn-guardian': 'ElasticSearch'
         }
         self.get_resources()
 
