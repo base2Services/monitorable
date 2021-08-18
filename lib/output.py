@@ -140,7 +140,7 @@ class Output:
                     for identifier in identifiers:
                         region_output['Resources'].setdefault(templates[resource]['cfn-guardian'],[])
                         if type(identifier) is dict:
-                            identifier['Id'] = identifier.pop(templates[resource]['identifier'])
+                            identifier['Id'] = identifier.pop(templates[resource]['identifier']),
                             region_output['Resources'][templates[resource]['cfn-guardian']].append(identifier)
                         else:
                             region_output['Resources'][templates[resource]['cfn-guardian']].append({'Id': identifier})
