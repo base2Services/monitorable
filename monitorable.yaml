@@ -5,8 +5,7 @@
 
 Resources:
   ApplicationTargetGroup:
-  - Id: !!python/tuple
-    - targetgroup/prod-Targe-Q8GUXVF0SZFA/e0ad580fb8d8e770
+  - Id: targetgroup/prod-Targe-Q8GUXVF0SZFA/e0ad580fb8d8e770
     LoadBalancer: app/prod-Appli-YH1BB77WJ9ZM/9ded7a81787a01b9
   AutoScalingGroup:
   - Id: prod-BastionStack-OFO4UZE98OPS-AutoScaleGroup-1I4YMT57UHDCB
@@ -56,7 +55,8 @@ Resources:
   - Id: prod-WinW-ElasticL-1IJ5W7GT9R754
   - Id: prod-WinW-ElasticL-16EHN6YC4X6KO
   ElasticSearch:
-  - Id: tg-prod-elastic-v6
+  - Id: hello
+    'Id:': '223829094007'
   Glue:
   - Id: GMMActivity
   - Id: GMMUsers
@@ -92,11 +92,9 @@ Resources:
   - Id: prod-monitor-HttpCheckFunction-6YZ0NNVJYTEO
   - Id: MaintainDynamicPlaylist
   NetworkTargetGroup:
-  - Id: !!python/tuple
-    - targetgroup/manual-winweb-nlb-tg-http/647b430528f10c8e
+  - Id: targetgroup/manual-winweb-nlb-tg-http/647b430528f10c8e
     LoadBalancer: net/manual-testing-winweb-nlb/3c92dbd68898642d
-  - Id: !!python/tuple
-    - targetgroup/manual-winweb-nlb-tg-tls/1fdfed7a843d27ff
+  - Id: targetgroup/manual-winweb-nlb-tg-tls/1fdfed7a843d27ff
     LoadBalancer: net/manual-testing-winweb-nlb/3c92dbd68898642d
   RDSInstance:
   - Id: pr6y3lm0q4dylg
