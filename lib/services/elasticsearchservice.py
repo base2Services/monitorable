@@ -31,28 +31,3 @@ class Elasticsearchservice:
                     'id': domain_id['DomainName'],
                     'DomainName': "hello"
                 }])
-
-                
-#   ElasticSearch:
-#   - Id: 223829094007/tg-prod-elastic-v6
-
-# self.identifiers.append({
-#     'id': {
-#         'TargetGroup': tg['arn'].split(':')[-1],
-#         'LoadBalancer': lb_arn.split('loadbalancer/')[1]
-#     },
-
-
-# client = boto3.client('elbv2', region_name=self.region)
-# paginator = client.get_paginator('describe_target_groups')
-# page_iterator = paginator.paginate()
-# target_group_arns = []
-# for page in page_iterator:
-#     target_group_arns.extend([{
-#         'arn': item['TargetGroupArn'],
-#         'lb': item['LoadBalancerArns']
-#     } for item in page['TargetGroups']])
-
-#   ElasticSearch:
-#   - DomainName: tg-prod-elastic-v6
-#     Id: '123456'
