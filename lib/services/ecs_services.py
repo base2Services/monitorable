@@ -23,9 +23,9 @@ class Ecs_services:
             for page in page_iterator:
                 clusterArns.extend([item for item in page['clusterArns']])
             if clusterArns:
-                serviceArns = []
                 clusters = client.describe_clusters(clusters=clusterArns)
                 for cluster in clusters['clusters']:
+                    serviceArns = []
                     clusterName = cluster['clusterName']
                     paginator = client.get_paginator('list_services')
                     page_iterator = paginator.paginate(cluster=clusterName)
