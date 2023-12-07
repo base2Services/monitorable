@@ -1,6 +1,5 @@
 import boto3
 
-
 class Docdb:
 
     def __init__(self, region):
@@ -8,8 +7,8 @@ class Docdb:
         self.region = region
         self.identifiers = []
         self.templates = {
-            'cfn-monitor': 'DocDbInstance',
-            'cfn-guardian': 'DocDbInstance'
+            'cfn-monitor': 'DocumentDBCluster',
+            'cfn-guardian': 'DocumentDBCluster'
         }
         self.get_resources()
 
