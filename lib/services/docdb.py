@@ -1,15 +1,15 @@
 import boto3
 
 
-class Aurora:
+class Docdb:
 
     def __init__(self, region):
-        self.name = 'aurora'
+        self.name = 'docdb'
         self.region = region
         self.identifiers = []
         self.templates = {
-            'cfn-monitor': 'AuroraInstance',
-            'cfn-guardian': 'RDSClusterInstance'
+            'cfn-monitor': 'DocDbInstance',
+            'cfn-guardian': 'DocDbInstance'
         }
         self.get_resources()
 
@@ -23,7 +23,7 @@ class Aurora:
                 instances.extend([{
                     'id': item['DBInstanceIdentifier'],
                     'arn': item['DBInstanceArn'],
-                } for item in page['DBInstances'] if 'DBClusterIdentifier' in item and item['Engine'] != 'docdb'])
+                } for item in page['DBInstances'] if 'DBClusterIdentifier' in item and item['Engine'] == 'docdb'])
             for instance in instances:
                 tags = client.list_tags_for_resource(ResourceName=instance['arn'])['TagList']
                 self.identifiers.extend([{
