@@ -20,11 +20,21 @@ class Vpn_tunnels:
             if 'VpnConnections' in page:
                 connections = [item for item in page['VpnConnections']]
             for connection in connections:
-                for tunnel in connection['Options']['TunnelOptions']:
+                try:
+                    for tunnel in connection['Options']['TunnelOptions']:
 
-                    self.identifiers.extend([{
-                    'id': tunnel['OutsideIpAddress'],
-                    'tags': connection['Tags']
+                        self.identifiers.extend([{
+                        'id': tunnel['OutsideIpAddress'],
+                        'tags': str(connection['Tags'])
+                        }])
+                except KeyError:
+                    import xml.etree.ElementTree as ET
+                    tree = ET.ElementTree(ET.fromstring(connection['CustomerGatewayConfiguration']))
+                    root = tree.getroot()
+                    ips = root.findall("tunnel_outside_address")
+                    for i in ips:
+                        self.identifiers.extend([{
+                        'id': i
                     }])
 
         except Exception as e:
