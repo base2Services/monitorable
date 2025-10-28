@@ -43,7 +43,7 @@ class Ecs_services:
                                         'ServiceName': item['serviceName'],
                                         'Cluster': clusterName
                                     },
-                                    'tags': item['tags']
+                                    'tags': item['tags'] if 'tags' in item else []
                                 } for item in client.describe_services(cluster=clusterName, services=array, include=['TAGS'])['services'])
                         else:
                             self.identifiers.extend({
@@ -51,7 +51,7 @@ class Ecs_services:
                                         'ServiceName': item['serviceName'],
                                         'Cluster': clusterName
                                     },
-                                    'tags': item['tags']
+                                    'tags': item['tags'] if 'tags' in item else []
                                 } for item in client.describe_services(cluster=clusterName, services=serviceArns, include=['TAGS'])['services'])
 
         except Exception as e:
