@@ -46,9 +46,10 @@ class Resources:
                     match = False
                     value = ''
                     for tag in resource['tags']:
-                        if tag['key'] == tag_key:
-                            match = True
-                            value = tag['value']
+                        if 'key' in tag and 'value' in tag:
+                            if tag['key'] == tag_key:
+                                match = True
+                                value = tag['value']
                     if match:
                         identifiers.setdefault(value,{})
                         identifiers[value].setdefault(region,{})
