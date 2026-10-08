@@ -9,7 +9,7 @@ class Stepfunctions:
         self.identifiers = []
         self.templates = {
             'cfn-monitor': 'Stepfunctions',
-            'cfn-guardian': 'Stepfunctions'
+            'cfn-guardian': 'StepFunctions'
         }
         self.get_resources()
 
