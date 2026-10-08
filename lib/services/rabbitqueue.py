@@ -8,7 +8,7 @@ class Rabbitqueue:
         self.region = region
         self.identifiers = []
         self.templates = {
-            'identifier': 'Broker',
+            'identifier': 'Queue',
             'cfn-monitor': 'NotSupportedAmazonMQRabbitMQQueue',
             'cfn-guardian': 'AmazonMQRabbitMQQueue'
         }
