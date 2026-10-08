@@ -53,7 +53,8 @@ class Rabbitnode:
                                     'id': {
                                         'Broker': broker['name'],
                                         'Node': dimension['Value']
-                                    }
+                                    },
+                                    'tags': []
                                 }
                                 # Ensure node data is unique and we're not getting duplicates due to multiple metrics returning the same node names
                                 if node not in self.identifiers:

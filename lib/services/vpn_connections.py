@@ -20,7 +20,10 @@ class Vpn_connections:
             for item in page['VpnConnections']:
                 self.identifiers.extend([{
                 'id': item['VpnConnectionId'],
-                'tags': item['Tags']
+                'tags': [{
+                    'key': t['Key'],
+                    'value': t['Value']
+                } for t in item.get('Tags', [])]
                 }])
 
         except Exception as e:
