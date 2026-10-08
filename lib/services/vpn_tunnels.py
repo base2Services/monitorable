@@ -17,14 +17,16 @@ class Vpn_tunnels:
         try:
             client = boto3.client('ec2', region_name=self.region)
             page = client.describe_vpn_connections()
-            if 'VpnConnections' in page:
-                connections = [item for item in page['VpnConnections']]
+            connections = page.get('VpnConnections', [])
             for connection in connections:
                 for tunnel in connection['Options']['TunnelOptions']:
 
                     self.identifiers.extend([{
                     'id': tunnel['OutsideIpAddress'],
-                    'tags': connection['Tags']
+                    'tags': [{
+                        'key': t['Key'],
+                        'value': t['Value']
+                    } for t in connection.get('Tags', [])]
                     }])
 
         except Exception as e:

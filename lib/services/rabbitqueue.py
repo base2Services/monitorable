@@ -61,7 +61,8 @@ class Rabbitqueue:
                                             'Broker': broker['name'],
                                             'Queue': next_iter['Value'],
                                             'Vhost': dimension['Value']
-                                        }
+                                        },
+                                        'tags': []
                                     }
                                     # Ensure queue data is unique and we're not getting duplicates due to multiple metrics returning the same queue data
                                     if queue not in self.identifiers:
