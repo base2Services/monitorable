@@ -36,7 +36,7 @@ class Nlb:
                                         self.identifiers.append({
                                             'id': {
                                                 'TargetGroup': tg['arn'].split(':')[-1],
-                                                'LoadBalancer': lb_arn.split('loadbalancer/')[1]
+                                                'LoadBalancer': lb_arn.split(':loadbalancer/')[-1]
                                             },
                                             'tags': [{
                                                 'key': t['Key'],
